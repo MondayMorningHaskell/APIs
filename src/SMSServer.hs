@@ -1,8 +1,15 @@
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE TypeOperators     #-}
+{-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module SMSServer where
 
+import Data.Proxy (Proxy(..))
 import Data.Text (pack, Text)
+import Network.Wai.Handler.Warp (run)
+import Servant.API
+import Servant.Server
 import System.Environment
 import Twilio (runTwilio')
 import Twilio.Messages (post, PostMessage(..))
@@ -28,9 +35,18 @@ sendBasicMessage = do
     _ <- post msg
     return ()
 
+type SMSServerAPI = "api" :> "ping" :> Get '[JSON] String
+
+pingHandler :: Handler String
+pingHandler = return "Pong"
+
+smsServerAPI :: Proxy SMSServerAPI
+smsServerAPI = Proxy :: Proxy SMSServerAPI
+
+smsServer :: Server SMSServerAPI
+smsServer = pingHandler
+
 runServer :: IO ()
 runServer = do
-  sid <- fetchSid
-  token <- fetchToken
-  putStrLn sid
-  putStrLn token
+  port <- read <$> getEnv "PORT"
+  run port (serve smsServerAPI smsServer)
