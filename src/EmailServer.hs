@@ -28,8 +28,6 @@ pingHandler = return "Pong"
 
 incomingHandler :: IncomingMessage -> Handler ()
 incomingHandler (IncomingMessage from body) = liftIO $ do
-  putStrLn "Receiving Message"
-  print body
   case messageToCommand body of
     Nothing -> do
       twilioNum <- fetchTwilioNumber
