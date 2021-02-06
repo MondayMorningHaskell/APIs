@@ -60,5 +60,5 @@ data SMSCommand = SubscribeCommand Text
 
 messageToCommand :: Text -> Maybe SMSCommand
 messageToCommand messageBody = case splitOn " " messageBody of
-  ["subscribe", email] -> Just $ SubscribeCommand email
+  ("subscribe" : email : _) -> Just $ SubscribeCommand email
   _ -> Nothing
