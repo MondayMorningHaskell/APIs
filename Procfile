@@ -1,1 +1,1 @@
-web: run-sms-server
+web: run-email-server
