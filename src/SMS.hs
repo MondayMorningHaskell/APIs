@@ -18,25 +18,22 @@ fetchSid = (getEnv "TWILIO_ACCOUNT_SID")
 fetchToken :: IO String
 fetchToken = (getEnv "TWILIO_AUTH_TOKEN")
 
-fetchTwilioNumber :: IO Text
+fetchTwilioNumber :: IO Text 
 fetchTwilioNumber = pack <$> getEnv "TWILIO_PHONE_NUMBER"
 
--- SMS Command
-
-data SMSCommand = SubscribeCommand Text
-
-messageToCommand :: Text -> Maybe SMSCommand
-messageToCommand messageBody = case splitOn " " messageBody of
-  ["subscribe", email] -> Just $ SubscribeCommand email
-  _ -> Nothing
+fetchUserNumber :: IO Text
+fetchUserNumber = pack <$> getEnv "TWILIO_USER_NUMBER"
 
 -- Sending a Basic Message
 
-sendMessage :: Text -> Text -> IO ()
-sendMessage toNumber message = runTwilio' fetchSid fetchToken $ do
-  let msg = PostMessage "+15551231234" toNumber message Nothing
-  _ <- post msg
-  return ()
+sendBasicMessage :: IO ()
+sendBasicMessage = do
+  toNumber <- fetchUserNumber
+  fromNumber <- fetchTwilioNumber
+  runTwilio' fetchSid fetchToken $ do
+    let msg = PostMessage toNumber fromNumber "Hello Twilio!" Nothing
+    _ <- post msg
+    return ()
 
 -- Message Data Type
 
@@ -56,3 +53,12 @@ instance FromForm IncomingMessage where
         fromNumber <- HashMap.lookup "From" form
         body <- HashMap.lookup "Body" form
         return (fromNumber, body)
+
+-- SMS Command
+
+data SMSCommand = SubscribeCommand Text
+
+messageToCommand :: Text -> Maybe SMSCommand
+messageToCommand messageBody = case splitOn " " messageBody of
+  ["subscribe", email] -> Just $ SubscribeCommand email
+  _ -> Nothing
