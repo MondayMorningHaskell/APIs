@@ -12,13 +12,14 @@ import System.Environment
 
 -- Sending Email
 
-sendMail :: IO ()
-sendMail = do
+sendBasicEmail :: IO ()
+sendBasicEmail = do
   domain <- getEnv "MAILGUN_DOMAIN"
   apiKey <- getEnv "MAILGUN_API_KEY"
   replyAddress <- pack <$> getEnv "MAILGUN_REPLY_ADDRESS"
+  toAddress <- pack <$> getEnv "MAILGUN_USER_ADDRESS"
   let context = HailgunContext domain apiKey Nothing
-  case mkMessage replyAddress of
+  case mkMessage toAddress replyAddress of
     Left err -> putStrLn ("Making failed: " ++ show err)
     Right msg -> do
       result <- sendEmail context msg
@@ -26,12 +27,27 @@ sendMail = do
         Left err -> putStrLn ("Sending failed: " ++ show err)
         Right resp -> putStrLn ("Sending succeeded: " ++ show resp)
   where
-    mkMessage replyAddress = hailgunMessage
+    mkMessage toAddress replyAddress = hailgunMessage
       "Hello Mailgun!"
       (TextOnly "This is a test message being sent from our mailgun server.")
       replyAddress 
-      (emptyMessageRecipients { recipientsTo = ["jhbowen047@gmail.com"] })
+      (emptyMessageRecipients { recipientsTo = [toAddress] })
       []
+
+sendSubscribeEmail :: Text -> IO ()
+sendSubscribeEmail email = do
+  domain <- getEnv "MAILGUN_DOMAIN"
+  apiKey <- getEnv "MAILGUN_API_KEY"
+  replyAddress <- pack <$> getEnv "MAILGUN_REPLY_ADDRESS"
+  let context = HailgunContext domain apiKey Nothing
+  currentDir <- getCurrentDirectory
+  case mkSubscribeMessage replyAddress (encodeUtf8 email) currentDir of
+    Left err -> putStrLn ("Making failed: " ++ show err)
+    Right msg -> do
+      result <- sendEmail context msg
+      case result of
+        Left err -> putStrLn ("Sending failed: " ++ show err)
+        Right resp -> putStrLn ("Sending succeeded: " ++ show resp)
 
 mkSubscribeMessage :: ByteString -> ByteString -> FilePath -> Either HailgunErrorMessage HailgunMessage
 mkSubscribeMessage replyAddress subscriberAddress currentDir = hailgunMessage
@@ -45,9 +61,9 @@ mkSubscribeMessage replyAddress subscriberAddress currentDir = hailgunMessage
       textOnly
       ("Here's your reward! To confirm your subscription, click " <> link <> "!")
     textOnly = "Here's your reward! To confirm your subscription, go to "
-      <> "https://haskell-apis.herokuapp.com/api/subscribe/" <> subscriberAddress
+      <> "https://mmh-apis.herokuapp.com/api/subscribe/" <> subscriberAddress
       <> " and we'll sign you up!"
-    link = "<a href=\"https://haskell-apis.herokuapp.com/api/subscribe/" 
+    link = "<a href=\"https://mmh-apis.herokuapp.com/api/subscribe/"
       <> subscriberAddress <> "\">this link</a>"
 
 rewardFilepath :: FilePath -> FilePath
