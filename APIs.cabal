@@ -30,7 +30,8 @@ library
       SMSServer
       Email
       EmailServer
-      Mailchimp
+      Subscribers
+      FinalServer
   hs-source-dirs:
       src
   build-depends:
@@ -38,6 +39,7 @@ library
     , aeson
     , bytestring
     , directory
+    , exceptions
     , hailgun
     , http-api-data
     , http-client-tls
