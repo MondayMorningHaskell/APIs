@@ -1,1 +1,1 @@
-web: run-email-server
+web: run-final-server
