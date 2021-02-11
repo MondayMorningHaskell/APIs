@@ -66,7 +66,7 @@ type MCAuth = BasicAuth "mailchimp" ()
 
 type MailchimpApi =
   MCAuth :> "lists" :> Get '[JSON] MailchimpListResponse :<|>
-  MCAuth :> "lists" :> Capture "list-id" Text :> QueryParam "count" Int :> Get '[JSON] MailchimpMembersResponse :<|>
+  MCAuth :> "lists" :> Capture "list-id" Text :> "members" :> QueryParam "count" Int :> Get '[JSON] MailchimpMembersResponse :<|>
   MCAuth :> "lists" :> Capture "list-id" Text :> ReqBody '[JSON] MailchimpSubscriber :> Post '[JSON] ()
 
 mailchimpApi :: Proxy MailchimpApi
