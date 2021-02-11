@@ -31,7 +31,7 @@ library
       Email
       EmailServer
       Subscribers
-      FinalServer
+      FullServer
   hs-source-dirs:
       src
   build-depends:
@@ -70,8 +70,8 @@ executable run-email-server
     , base >=4.7 && <5
   default-language: Haskell2010
 
-executable run-final-server
-  main-is: RunFinalServer.hs
+executable run-full-server
+  main-is: RunFullServer.hs
   hs-source-dirs: app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:

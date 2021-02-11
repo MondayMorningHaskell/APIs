@@ -3,7 +3,7 @@
 {-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module FinalServer where
+module FullServer where
 
 import Control.Monad.Catch (throwM)
 import Control.Monad.IO.Class (liftIO)

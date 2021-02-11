@@ -1,1 +1,1 @@
-web: run-final-server
+web: run-full-server

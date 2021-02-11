@@ -1,6 +1,6 @@
 module Main where
 
-import FinalServer
+import FullServer
 
 main :: IO ()
 main = runServer
