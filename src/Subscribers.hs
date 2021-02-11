@@ -61,20 +61,26 @@ instance FromJSON MailchimpMembersResponse where
     members <- o .: "members"
     MailchimpMembersResponse <$> forM members parseJSON
 
+--
+data SubscribeResponse = SubscribeResponse
+
+instance FromJSON SubscribeResponse where
+  parseJSON _ = return SubscribeResponse
+
 ---------- Servant definitions -----------
 type MCAuth = BasicAuth "mailchimp" ()
 
 type MailchimpApi =
   MCAuth :> "lists" :> Get '[JSON] MailchimpListResponse :<|>
   MCAuth :> "lists" :> Capture "list-id" Text :> "members" :> QueryParam "count" Int :> Get '[JSON] MailchimpMembersResponse :<|>
-  MCAuth :> "lists" :> Capture "list-id" Text :> "members" :> ReqBody '[JSON] MailchimpSubscriber :> Post '[JSON] ()
+  MCAuth :> "lists" :> Capture "list-id" Text :> "members" :> ReqBody '[JSON] MailchimpSubscriber :> Post '[JSON] SubscribeResponse
 
 mailchimpApi :: Proxy MailchimpApi
 mailchimpApi = Proxy :: Proxy MailchimpApi
 
 fetchListsClient :: BasicAuthData -> ClientM MailchimpListResponse
 fetchSubscribersClient :: BasicAuthData -> Text -> Maybe Int -> ClientM MailchimpMembersResponse
-subscribeNewUserClient :: BasicAuthData -> Text -> MailchimpSubscriber -> ClientM ()
+subscribeNewUserClient :: BasicAuthData -> Text -> MailchimpSubscriber -> ClientM SubscribeResponse
 ( fetchListsClient :<|>
   fetchSubscribersClient :<|>
   subscribeNewUserClient) = client mailchimpApi
