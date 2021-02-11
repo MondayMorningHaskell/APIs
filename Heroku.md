@@ -30,15 +30,17 @@ Now from the root of your project, create a new Heroku "app". You'll need to use
   -b https://github.com/mfine/heroku-buildpack-stack
 ```
 
+Note that whatever name you choose, you'll have to update some of the code to make one of the email links work. You'll want to update the two uses of `mmh-apis` in the [Email module](https://github.com/MondayMorningHaskell/APIs/blob/master/src/Emails.hs#L64-L66) so that they instead use your app name.
+
 Next you should "scale" the application so it has a machine to run:
 
 ```bash
 >> heroku ps:scale web=1
 ```
 
-If you go to your Heroku dashboard, you should see your application now. You'll need to customize it by adding various credentials related to your Twilio and Mailgun accounts. To do this, click on the application and go to the "Settings" page and find the "Config Vars" section, as seen here:
+If you go to your Heroku dashboard, you should see your application now. You'll need to customize it by adding various credentials related to your Twilio, Mailgun, and Mailchimp accounts. To do this, click on the application and go to the "Settings" page and find the "Config Vars" section, as seen here:
 
-(Image)
+[Heroku Config Vars](https://github.com/MondayMorningHaskell/APIs/blob/master/HerokuConfig.png?raw=true)
 
 Click "Reveal Config Vars" and you'll be able to start adding them manually. You should do this for values like `TWILIO_ACCOUNT_SID` that are used as environment variables throughout our applications.
 
@@ -64,7 +66,7 @@ origin ...
 If these aren't present you can also add them like so:
 
 ```bash
->> heroku git:remote -a haskell-test-app
+>> heroku git:remote -a mmh-apis
 ```
 
 Then you can push your code to the container like so:

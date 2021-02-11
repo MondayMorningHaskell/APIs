@@ -22,7 +22,7 @@ import Email
 import SMS
 import Subscribers
 
-type FinalServerAPI =
+type FullServerAPI =
   "api" :> "sms" :> ReqBody '[FormUrlEncoded] IncomingMessage :> Post '[JSON] () :<|>
   "api" :> "ping" :> Get '[JSON] String :<|>
   "api" :> "subscribe" :> Capture "email" Text :> Get '[JSON] ()
@@ -55,10 +55,10 @@ tryIO action = do
     Left e -> throwM $ err500 { errBody = BSL.fromStrict $ BSC.pack (show e)}
     Right x -> return x
 
-finalServerAPI :: Proxy FinalServerAPI
-finalServerAPI = Proxy :: Proxy FinalServerAPI
+finalServerAPI :: Proxy FullServerAPI
+finalServerAPI = Proxy :: Proxy FullServerAPI
 
-finalServer :: Server FinalServerAPI
+finalServer :: Server FullServerAPI
 finalServer = incomingHandler :<|> pingHandler :<|> subscribeEmailHandler
 
 runServer :: IO ()
