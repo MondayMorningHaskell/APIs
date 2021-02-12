@@ -40,7 +40,7 @@ Next you should "scale" the application so it has a machine to run:
 
 If you go to your Heroku dashboard, you should see your application now. You'll need to customize it by adding various credentials related to your Twilio, Mailgun, and Mailchimp accounts. To do this, click on the application and go to the "Settings" page and find the "Config Vars" section, as seen here:
 
-[[https://github.com/MondayMorningHaskell/APIs/blob/master/HerokuConfig.png|alt=Heroku Config Vars]]()
+[[https://github.com/MondayMorningHaskell/APIs/blob/master/HerokuConfig.png|alt=Heroku Config Vars]]
 
 Click "Reveal Config Vars" and you'll be able to start adding them manually. You should do this for values like `TWILIO_ACCOUNT_SID` that are used as environment variables throughout our applications.
 
